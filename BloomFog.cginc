@@ -19,7 +19,8 @@ float CUSTOM_FOG_OFFSET_NAME;
 #define CUSTOM_FOG_COMPUTE_FACTOR(distance, fogStartOffset, fogScale) \
   float customFogFactor = max(dot(distance, distance) + -fogStartOffset, 0); \
   customFogFactor = max(customFogFactor * fogScale + -CUSTOM_FOG_OFFSET_NAME, 0); \
-  customFogFactor = 1 / (customFogFactor * CUSTOM_FOG_ATTENUATION_NAME + 1)
+  customFogFactor = 1 / (customFogFactor * CUSTOM_FOG_ATTENUATION_NAME + 1); \
+  customFogFactor = -customFogFactor + 1
 #endif
 
 #ifndef CUSTOM_FOG_HEIGHT_FOG_START_Y_NAME
@@ -76,19 +77,20 @@ sampler2D _BloomPrePassTexture;
   float3 bloomFogDistance = worldPos - _WorldSpaceCameraPos; \
   CUSTOM_FOG_COMPUTE_FACTOR(bloomFogDistance, fogStartOffset, fogScale); \
   BLOOM_PREPASS_SAMPLE(screenPos); \
-  col = (-customFogFactor + 1) * (-col + bloomPrepassCol) + col
+  col = customFogFactor * (-col + bloomPrepassCol) + col
 
 #define BLOOM_FOG_HEIGHT_FOG_APPLY(col, screenPos, worldPos, fogStartOffset, fogScale, fogHeightOffset, fogHeightScale) \
   float3 bloomFogDistance = worldPos - _WorldSpaceCameraPos; \
   CUSTOM_FOG_HEIGHT_FOG_COMPUTE_FACTOR(worldPos, fogHeightOffset, fogHeightScale); \
   CUSTOM_FOG_COMPUTE_FACTOR(bloomFogDistance, fogStartOffset, fogScale); \
   BLOOM_PREPASS_SAMPLE(screenPos); \
+  customFogFactor = -customFogFactor + 1; \
   col = (customFogHeightFogFactor * -customFogFactor + 1) * (-col + bloomPrepassCol) + col
 
 #define BLOOM_FOG_APPLY_TRANSPARENT(col, worldPos, fogStartOffset, fogScale) \
   float3 bloomFogDistance = worldPos - _WorldSpaceCameraPos; \
   CUSTOM_FOG_COMPUTE_FACTOR(bloomFogDistance, fogStartOffset, fogScale); \
-  customFogFactor = customFogFactor * col.a; \
+  customFogFactor = (-customFogFactor + 1) * col.a; \
   col = float4(customFogFactor * col.rgb, customFogFactor)
 
 #endif // BLOOM_FOG_CG_INCLUDED
