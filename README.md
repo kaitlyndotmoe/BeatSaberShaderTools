@@ -27,8 +27,9 @@ If you're using BloomFog/HeightFog in your custom notes, you should consider usi
 - `_FogScale`: 0.5
 
 # Q&A
-- Q: Why is the new CGINC more complicated to use than it was in the previous versions?
-- A: It allows the creator to have more control over how the CGINC works, compared to previous versions.
+- **Q:** Why is the new CGINC more complicated to use than it was in the previous versions?
+- **A:** It allows the creator to have more control over how the CGINC works, compared to previous versions.
 
-- Q: Can I support you?
-- A: Sure! https://www.patreon.com/join/whatdahopper
+
+- **Q:** Can I support you?
+- **A:** Sure! https://www.patreon.com/join/whatdahopper
